@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Forever Us — 3D Page Turn Love Book</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            script: ['"Great Vibes"', 'cursive'],
+            cute: ['"Noto Sans Myanmar"', '"Quicksand"', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- React 18 & Framer Motion -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/framer-motion@11/dist/framer-motion.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, #ffd6e7 0%, transparent 45%),
+        radial-gradient(circle at 80% 85%, #ffc2d9 0%, transparent 45%),
+        linear-gradient(180deg, #ffe5f0 0%, #ffd1e3 50%, #ffc2da 100%);
+      color: #6b1d3a;
+      font-family: 'Noto Sans Myanmar', 'Quicksand', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .polka-paper {
+      background-color: #fffafd;
+      background-image: radial-gradient(rgba(244, 114, 182, 0.16) 1.5px, transparent 1.5px);
+      background-size: 18px 18px;
+    }
+
+    .book-cover-pink {
+      background: linear-gradient(145deg, #ffbdd6 0%, #ffa6c9 50%, #ff94be 100%);
+      box-shadow:
+        0 20px 45px rgba(190, 24, 93, 0.22),
+        inset 0 2px 4px rgba(255, 255, 255, 0.7);
+    }
+
+    .stitched-border {
+      border: 1.5px dashed rgba(236, 72, 153, 0.45);
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useRef } = React;
+    const { motion, AnimatePresence } = window.Motion;
+
+    const spreadsData = [
+      {
+        spreadId: 0,
+        rangeLabel: 'Pages 1 – 2 of 8',
+        left: {
+          num: 1,
+          tag: '♥ REASON #1 ♥',
+          title: 'မင်းရဲ့ အပြုံးလေးကြောင့်',
+          desc: 'ကိုယ့်ရဲ့ ပင်ပန်းနေတဲ့ နေ့ရက်တိုင်းကို အလင်းရောင်နဲ့ နွေးထွေးမှုပေးနိုင်တဲ့ အလှပဆုံး အပြုံးလေးပါ။',
+          img: 'img/image1.png',
+          fallback: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&q=80',
+        },
+        right: {
+          num: 2,
+          tag: '♥ REASON #2 ♥',
+          title: 'မင်းရဲ့ မျက်ဝန်းလေးကြောင့်',
+          desc: 'စကားလုံးပေါင်းများစွာထက် ပိုနက်ရှိုင်းပြီး ကြည့်မိတိုင်း ရင်ခုန်သံတွေ ရပ်တန့်သွားစေတဲ့ မျက်ဝန်းလေးပါ။',
+          img: 'img/image2.png',
+          fallback: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&q=80',
+        },
+      },
+      {
+        spreadId: 1,
+        rangeLabel: 'Pages 3 – 4 of 8',
+        left: {
+          num: 3,
+          tag: '♥ REASON #3 ♥',
+          title: 'မင်းရဲ့ ဂရုစိုက်မှုလေးကြောင့်',
+          desc: 'အသေးအဖွဲလေးကအစ ကိုယ့်အပေါ် နွေးနွေးထွေးထွေး ဂရုစိုက်ပေးတတ်တဲ့ မင်းရဲ့ စိတ်ထားလေးကို အမြဲချစ်တယ်။',
+          img: 'img/image3.png',
+          fallback: 'https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&q=80',
+        },
+        right: {
+          num: 4,
+          tag: '♥ REASON #4 ♥',
+          title: 'အတူရှိတဲ့ အချိန်လေးတွေကြောင့်',
+          desc: 'မင်းနဲ့အတူ ရှိနေရတဲ့ စက္ကန့်တိုင်းဟာ ကိုယ့်အတွက် အဖိုးအဖြတ်နိုင်ဆုံး အမှတ်တရတွေပါပဲ။',
+          img: 'img/image4.png',
+          fallback: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&q=80',
+        },
+      },
+      {
+        spreadId: 2,
+        rangeLabel: 'Pages 5 – 6 of 8',
+        left: {
+          num: 5,
+          tag: '♥ REASON #5 ♥',
+          title: 'မင်းရဲ့ ရယ်သံလေးကြောင့်',
+          desc: 'မင်းပျော်ရွှင်ပြီး ရယ်မောနေတာကို မြင်ရတာက ကိုယ့်ဘဝရဲ့ အကြီးမားဆုံး ပျော်ရွှင်မှုတစ်ခုပါ။',
+          img: 'img/image5.png',
+          fallback: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
+        },
+        right: {
+          num: 6,
+          tag: '♥ REASON #6 ♥',
+          title: 'အခက်အခဲတွေကြားက လက်တွဲမှုကြောင့်',
+          desc: 'ဘယ်လို အခြေအနေမျိုးမှာမဆို အနားကနေ မားမားမတ်မတ် ရပ်တည်ပေးခဲ့တဲ့အတွက် ကျေးဇူးတင်ပါတယ်။',
+          img: 'photo6.jpg',
+          fallback: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
+        },
+      },
+      {
+        spreadId: 3,
+        rangeLabel: 'Pages 7 – 8 of 8',
+        left: {
+          num: 7,
+          tag: '♥ REASON #7 ♥',
+          title: 'အနာဂတ် အိပ်မက်လေးတွေကြောင့်',
+          desc: 'မင်းနဲ့အတူ တည်ဆောက်သွားရမယ့် အနာဂတ်နေ့ရက်တိုင်းကို ရင်ခုန်စွာနဲ့ စောင့်မျှော်နေပါတယ်။',
+          img: 'photo7.jpg',
+          fallback: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80',
+        },
+        right: {
+          num: 8,
+          tag: '♥ REASON #8 ♥',
+          title: 'မင်းဖြစ်နေလို့ပါပဲ',
+          desc: 'အကြောင်းပြချက်တွေ အများကြီးရှိပေမယ့် အဓိကကတော့ မင်းဟာ ကိုယ့်ရဲ့ "တစ်ဦးတည်းသောသူ" ဖြစ်နေလို့ပါ။',
+          img: 'photo8.jpg',
+          fallback: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&q=80',
+        },
+      },
+    ];
+
+    function BookLeaf({ page, side }) {
+      return (
+        <div
+          className={`polka-paper relative p-4 sm:p-6 flex flex-col items-center justify-between text-center min-h-[330px] sm:min-h-[390px] ${
+            side === 'left'
+              ? 'rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none border-b md:border-b-0 md:border-r border-pink-200'
+              : 'rounded-b-2xl md:rounded-r-2xl md:rounded-bl-none'
+          }`}
+        >
+          <div className="stitched-border rounded-xl w-full h-full p-4 sm:p-5 flex flex-col items-center justify-between relative">
+            <span
+              className={`absolute -top-2.5 ${
+                side === 'left' ? '-left-2 -rotate-12' : '-right-2 rotate-12'
+              } text-base sm:text-lg select-none drop-shadow-xs`}
+            >
+              🎀
+            </span>
+            <span className="absolute top-2.5 right-3 text-[10px] text-pink-300 select-none">♥</span>
+            <span className="absolute bottom-2.5 left-3 text-[10px] text-pink-300 select-none">♥</span>
+
+            <span className="text-[11px] font-bold tracking-widest uppercase text-[#d6336c] bg-pink-100/90 border border-pink-200 px-3.5 py-0.5 rounded-full">
+              {page.tag}
+            </span>
+
+            <div className="my-3 relative">
+              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1.5 bg-gradient-to-tr from-[#ff4d8d] via-[#ff85b3] to-[#ffc2d9] shadow-[0_8px_20px_rgba(244,63,94,0.28)]">
+                <img
+                  src={page.img}
+                  alt={page.title}
+                  onError={(e) => {
+                    e.target.src = page.fallback;
+                  }}
+                  className="w-full h-full object-cover rounded-full bg-white pointer-events-none"
+                />
+              </div>
+              <span className="absolute -bottom-1 -right-1 bg-white border border-pink-200 rounded-full w-7 h-7 flex items-center justify-center text-sm shadow">
+                💖
+              </span>
+            </div>
+
+            <div className="space-y-1.5 max-w-xs">
+              <h3 className="font-bold text-base sm:text-lg text-[#9d174d]">{page.title}</h3>
+              <p className="text-xs sm:text-sm text-[#6b213e] leading-relaxed">{page.desc}</p>
+            </div>
+
+            <div className="mt-3 w-6 h-6 rounded-full border border-pink-300 bg-pink-50 text-[#d6336c] text-xs font-bold flex items-center justify-center">
+              {page.num}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [activeSpread, setActiveSpread] = useState(0);
+      const [direction, setDirection] = useState(1); // 1 = forward (flip right-to-left), -1 = backward
+      const [showFinalLetter, setShowFinalLetter] = useState(false);
+      const [playing, setPlaying] = useState(false);
+      const audioRef = useRef(null);
+
+      const current = spreadsData[activeSpread];
+      const isFirst = activeSpread === 0;
+      const isLast = activeSpread === spreadsData.length - 1;
+
+      const goNext = () => {
+        if (!isLast) {
+          setDirection(1);
+          setActiveSpread((prev) => prev + 1);
+        } else {
+          setShowFinalLetter(true);
+        }
+      };
+
+      const goPrev = () => {
+        if (!isFirst) {
+          setDirection(-1);
+          setActiveSpread((prev) => prev - 1);
+        }
+      };
+
+      // Drag left to flip forward, drag right to flip backward
+      const handleDragEnd = (event, info) => {
+        if (info.offset.x < -60) {
+          goNext();
+        } else if (info.offset.x > 60) {
+          goPrev();
+        }
+      };
+
+      const toggleSong = () => {
+        if (!audioRef.current) return;
+        if (playing) {
+          audioRef.current.pause();
+          setPlaying(false);
+        } else {
+          audioRef.current.play().catch(() => {});
+          setPlaying(true);
+        }
+      };
+
+      const pageVariants = {
+        enter: (dir) => ({
+          rotateY: dir > 0 ? 75 : -75,
+          opacity: 0,
+          scale: 0.94,
+          transformOrigin: dir > 0 ? 'left center' : 'right center',
+        }),
+        center: {
+          rotateY: 0,
+          opacity: 1,
+          scale: 1,
+          x: 0,
+          transformOrigin: direction > 0 ? 'left center' : 'right center',
+          transition: {
+            type: 'spring',
+            stiffness: 220,
+            damping: 24,
+          },
+        },
+        exit: (dir) => ({
+          rotateY: dir > 0 ? -75 : 75,
+          opacity: 0,
+          scale: 0.94,
+          transformOrigin: dir > 0 ? 'left center' : 'right center',
+          transition: {
+            duration: 0.28,
+            ease: 'easeInOut',
+          },
+        }),
+      };
+
+      return (
+        <div className="min-h-screen w-full py-5 px-3 sm:px-6 flex flex-col items-center justify-center relative select-none">
+          <audio ref={audioRef} src="song.mp3" loop />
+
+          {/* Top Header */}
+          <div className="w-full max-w-4xl mb-4 flex items-center justify-between gap-2 bg-white/90 backdrop-blur-md border border-pink-200 rounded-full px-4 py-2 shadow-md">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#be185d] whitespace-nowrap">
+              <span>💕</span>
+              <span>Happy Anniversary, My Love!</span>
+            </div>
+
+            <span className="bg-pink-100 text-[#9d174d] px-3 py-0.5 rounded-full text-xs font-bold whitespace-nowrap">
+              {current.rangeLabel}
+            </span>
+          </div>
+
+          {/* 3D Page Turn Stage */}
+          <div style={{ perspective: 1600 }} className="w-full max-w-4xl overflow-visible">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={current.spreadId}
+                custom={direction}
+                variants={pageVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.25}
+                onDragEnd={handleDragEnd}
+                className="book-cover-pink w-full p-2.5 sm:p-4 rounded-[28px] border-2 border-white/80 cursor-grab active:cursor-grabbing"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 relative rounded-2xl overflow-hidden shadow-md">
+                  {/* Center Book Spine */}
+                  <div className="hidden md:block absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-6 bg-gradient-to-r from-pink-900/10 via-pink-950/20 to-pink-900/10 z-10 pointer-events-none" />
+
+                  <BookLeaf page={current.left} side="left" />
+                  <BookLeaf page={current.right} side="right" />
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Bottom Controls */}
+          <div className="mt-4 bg-white/95 backdrop-blur-md border border-pink-200 rounded-full px-3 py-1.5 shadow-lg flex items-center justify-between gap-3 sm:gap-6 text-xs sm:text-sm">
+            <button
+              onClick={goPrev}
+              disabled={isFirst}
+              className={`px-3.5 py-1 rounded-full font-bold transition cursor-pointer ${
+                isFirst
+                  ? 'bg-pink-50 text-pink-300 cursor-not-allowed'
+                  : 'bg-pink-100 text-[#be185d] hover:bg-pink-200'
+              }`}
+            >
+              ◀ Prev
+            </button>
+
+            <span className="font-bold text-[#9d174d] whitespace-nowrap">{current.rangeLabel}</span>
+
+            <button
+              onClick={goNext}
+              className="px-4 py-1 rounded-full font-bold bg-gradient-to-r from-[#ff4d8d] to-[#e11d48] text-white shadow hover:opacity-95 transition cursor-pointer whitespace-nowrap"
+            >
+              {isLast ? 'Final Letter 💌' : 'Next ▶'}
+            </button>
+          </div>
+
+          {/* Final Dedicated Love Letter Modal */}
+          <AnimatePresence>
+            {showFinalLetter && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 bg-pink-950/55 backdrop-blur-xs flex items-center justify-center p-4"
+              >
+                <motion.div
+                  initial={{ scale: 0.88, y: 20, opacity: 0 }}
+                  animate={{ scale: 1, y: 0, opacity: 1 }}
+                  exit={{ scale: 0.88, opacity: 0 }}
+                  className="bg-[#fffdfd] text-[#4a1525] rounded-[28px] max-w-md w-full p-6 sm:p-8 shadow-2xl border-2 border-pink-200 relative"
+                >
+                  <button
+                    onClick={() => setShowFinalLetter(false)}
+                    className="absolute top-4 right-4 w-8 h-8 rounded-full bg-pink-100 text-pink-600 font-bold flex items-center justify-center hover:bg-pink-200 transition cursor-pointer"
+                  >
+                    ✕
+                  </button>
+
+                  <div className="flex justify-center mb-2">
+                    <span className="w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex items-center justify-center text-xl">
+                      💌
+                    </span>
+                  </div>
+
+                  <p className="text-[11px] uppercase tracking-widest text-center text-pink-500 font-bold mb-1">
+                    HAPPY ANNIVERSARY • OUR LOVE
+                  </p>
+                  <h3 className="font-script text-3xl sm:text-4xl text-center text-[#9d174d] mb-4">
+                    For You, My Love
+                  </h3>
+
+                  <div className="space-y-3 text-xs sm:text-sm leading-relaxed text-[#5c1d33] max-h-56 overflow-y-auto pr-1">
+                    <p>
+                      ဒီနေ့ Anniversary အထိမ်းအမှတ်အနေနဲ့ ကိုယ့်ရင်ထဲက စကားလုံးအချို့ကို ဒီစာအုပ်လေးထဲမှာ အမှတ်တရ သိမ်းဆည်းပေးလိုက်ပါတယ်။
+                    </p>
+                    <p>
+                      မင်းရဲ့ အပြုံးတွေ၊ ဂရုစိုက်မှုတွေနဲ့ အတူရှိခဲ့တဲ့ အချိန်တိုင်းက ကိုယ့်ဘဝရဲ့ အလှပဆုံး အခန်းကဏ္ဍတွေပါပဲ။
+                    </p>
+                    <p className="font-bold text-[#be185d]">
+                      Happy Anniversary ပါ ချစ်ရသူ။ ထာဝရ အတူတူ ရှိသွားကြမယ်နော်။ 🤍
+                    </p>
+                  </div>
+
+                  <div className="mt-6 pt-3.5 border-t border-pink-100 flex items-center justify-between text-xs">
+                    <div>
+                      <span className="text-pink-400 block text-[10px]">With all my love,</span>
+                      <span className="font-script text-2xl text-[#9d174d]">Your Partner 💖</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setShowFinalLetter(false);
+                        setDirection(-1);
+                        setActiveSpread(0);
+                      }}
+                      className="px-4 py-2 rounded-full bg-gradient-to-r from-[#ff4d8d] to-[#e11d48] text-white font-bold shadow hover:opacity-95 transition cursor-pointer"
+                    >
+                      Read Again ✨
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
